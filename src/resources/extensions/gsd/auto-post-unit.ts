@@ -585,7 +585,7 @@ export async function postUnitPreVerification(pctx: PostUnitContext, opts?: PreV
             ctx.ui.notify(`Milestone ${s.currentMilestoneId} parked: "${reason}"`, "info");
           }
         } catch (err) {
-          process.stderr.write(`gsd: abandon-detect: ${(err as Error).message}\n`);
+          logWarning("postUnit", `abandon-detect failed: ${(err as Error).message}`);
         }
 
         await resolveAllOverrides(s.basePath);
