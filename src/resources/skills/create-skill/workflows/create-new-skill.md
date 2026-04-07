@@ -103,7 +103,7 @@ Use the scope selected in Step 1 to determine the base path:
 - **Project-local:** `.agents/skills/{skill-name}`
 
 ```bash
-BASE_PATH="{selected-base}/agent/skills/{skill-name}"
+BASE_PATH="{selected-base}/skills/{skill-name}"
 mkdir -p $BASE_PATH
 # If complex:
 mkdir -p $BASE_PATH/workflows
