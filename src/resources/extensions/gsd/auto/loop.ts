@@ -49,7 +49,8 @@ function loadStuckState(basePath: string): { recentUnits: Array<{ key: string }>
       recentUnits: Array.isArray(data.recentUnits) ? data.recentUnits : [],
       stuckRecoveryAttempts: typeof data.stuckRecoveryAttempts === "number" ? data.stuckRecoveryAttempts : 0,
     };
-  } catch {
+  } catch (err) {
+    debugLog("autoLoop", { phase: "load-stuck-state-failed", error: err instanceof Error ? err.message : String(err) });
     return { recentUnits: [], stuckRecoveryAttempts: 0 };
   }
 }
@@ -63,8 +64,8 @@ function saveStuckState(basePath: string, state: LoopState): void {
       stuckRecoveryAttempts: state.stuckRecoveryAttempts,
       updatedAt: new Date().toISOString(),
     }) + "\n");
-  } catch {
-    // Non-fatal — stuck detection still works within session
+  } catch (err) {
+    debugLog("autoLoop", { phase: "save-stuck-state-failed", error: err instanceof Error ? err.message : String(err) });
   }
 }
 
@@ -87,7 +88,7 @@ function checkMemoryPressure(): { pressured: boolean; heapMB: number; limitMB: n
     const v8 = require("node:v8");
     const stats = v8.getHeapStatistics();
     limitMB = Math.round(stats.heap_size_limit / 1024 / 1024);
-  } catch { /* fallback to default */ }
+  } catch { limitMB = 4096; /* v8 stats unavailable — use conservative default */ }
   const pct = heapMB / limitMB;
   return { pressured: pct > MEMORY_PRESSURE_THRESHOLD, heapMB, limitMB, pct };
 }
