@@ -385,12 +385,8 @@ export async function showInterviewRound(
 				if (matchesKey(data, Key.enter)) {
 					saveEditorToState();
 					focusNotes = false;
-					// Only default to "None of the above" if the cursor is actually
-					// on that option — otherwise Tab→Enter from a normal option would
-					// silently change the selection (#3449).
-					if (!multiSel && st.committedIndex === null) {
-						st.committedIndex = st.cursorIndex;
-					}
+					// goNextOrSubmit() unconditionally sets committedIndex = cursorIndex
+					// for single-select, so no pre-commit is needed here (#3449).
 					goNextOrSubmit();
 					return;
 				}
